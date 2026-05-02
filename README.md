@@ -10,6 +10,15 @@
 # 功能
 允许重复输入视频链接，脚本会直接叠加获取到的对应弹幕
 
+# 应用场景
+垃圾画质的动画很多弹幕
+
+好心人传的4K分辨率动画 极少弹幕 此时他就有用了。
+
 
 # 截图
 <img width="463" height="768" alt="1111" src="https://github.com/user-attachments/assets/268aa743-0a5f-487c-8fee-2dad35325022" />
+
+<img width="1582" height="938" alt="QQ图片20260502225839" src="https://github.com/user-attachments/assets/f62e9843-2747-44a3-87f9-cf74055b872c" />
+
+↑只是效果演示
