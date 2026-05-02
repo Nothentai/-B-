@@ -273,14 +273,24 @@
         color: #ff6699;
         font-weight: 600;
       }
-      #dmi-author-link {
+      .dmi-author-link {
         font-size: 10px;
         color: #88aaff;
         text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 3px;
       }
-      #dmi-author-link:hover {
+      .dmi-author-link:hover {
         text-decoration: underline;
         color: #aaccff;
+      }
+      .dmi-link-icon {
+        font-size: 11px;
+        display: inline-block;
+        width: 14px;
+        text-align: center;
+        text-decoration: none;
       }
 
       /* Danmaku list */
@@ -418,7 +428,8 @@
         '<div id="dmi-author-avatar">&#x9759;</div>' +
         '<div id="dmi-author-info">' +
           '<span id="dmi-author-name">作者: 静寂</span>' +
-          '<a id="dmi-author-link" href="https://space.bilibili.com/166852" target="_blank" title="访问B站主页">B站主页: space.bilibili.com/166852</a>' +
+          '<a class="dmi-author-link" href="https://space.bilibili.com/166852" target="_blank" title="访问B站主页">B站主页</a>' +
+          '<a class="dmi-author-link" href="https://github.com/Nothentai/BiliBili-Danmaku-Import" target="_blank" title="查看项目源码">项目地址</a>' +
         '</div>' +
       '</div>' +
       '<h3>弹幕导入</h3>' +
@@ -469,6 +480,7 @@
     container.appendChild(toggleBtn);
     container.appendChild(panel);
     document.body.appendChild(container);
+    container.classList.add('collapsed');
 
     toggleBtn.addEventListener('click', function () {
       container.classList.toggle('collapsed');
@@ -678,8 +690,9 @@
         apiUrl = 'https://api.bilibili.com/x/web-interface/view?bvid=' + identifier.id;
       } else if (identifier.type === 'av') {
         apiUrl = 'https://api.bilibili.com/x/web-interface/view?aid=' + identifier.id;
-      } else if (identifier.type === 'ep') {
-        apiUrl = 'https://api.bilibili.com/pgc/view/web/season?ep_id=' + identifier.id;
+      } else if (identifier.type === 'ep' || identifier.type === 'ss') {
+        var param = identifier.type === 'ep' ? ('ep_id=' + identifier.id) : ('season_id=' + identifier.id);
+        apiUrl = 'https://api.bilibili.com/pgc/view/web/season?' + param;
       } else {
         reject(new Error('不支持的链接类型'));
         return;
@@ -697,7 +710,7 @@
             }
             var cid;
             var duration;
-            if (identifier.type === 'ep') {
+            if (identifier.type === 'ep' || identifier.type === 'ss') {
               var episodes = data.result && data.result.episodes;
               if (!episodes || episodes.length === 0) {
                 reject(new Error('未找到该番剧的剧集信息'));
@@ -705,7 +718,8 @@
               }
               cid = episodes[0].cid;
               duration = episodes[0].duration;
-              resolve({ cid: cid, duration: duration, title: (data.result.title || '番剧') + ' EP' + identifier.id });
+              var titleSuffix = identifier.type === 'ep' ? (' EP' + identifier.id) : ' (' + episodes[0].title + ')';
+              resolve({ cid: cid, duration: duration, title: (data.result.title || '番剧') + titleSuffix });
             } else {
               cid = data.data.cid;
               duration = data.data.duration;
